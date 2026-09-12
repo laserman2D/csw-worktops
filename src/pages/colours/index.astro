@@ -1,0 +1,224 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import EnquiryForm from '../../components/EnquiryForm.astro';
+import { vadara, families, finishes } from '../../data/vadara';
+import { vadaraImage } from '../../lib/vadaraImages';
+
+const designs = vadara.filter((d) => vadaraImage(d.slab));
+---
+
+<Layout
+  title="Quartz worktop colours: the Vadara range"
+  description="Browse the full Vadara quartz range we supply and fit: white, beige, grey and dark marble-effect and quartzite-effect designs, with slab photos and real installations. Samples brought to your kitchen."
+>
+  <section class="band">
+    <div class="container">
+      <div class="head">
+        <div>
+          <span class="eyebrow">Colours</span>
+          <h1>Vadara quartz, the full range</h1>
+          <p class="lead">
+            {designs.length} designs across five collections. Marble and quartzite looks on a
+            consistent quartz base, in 20mm and 30mm. Pick a few and we bring full-size samples to
+            the template visit.
+          </p>
+        </div>
+      </div>
+
+      <div class="filters" role="group" aria-label="Filter designs">
+        <div class="filters__group">
+          <span class="filters__label">Tone</span>
+          <button type="button" class="chip is-active" data-filter="family" data-value="all" aria-pressed="true">All</button>
+          {families.map((f) => (
+            <button type="button" class="chip" data-filter="family" data-value={f} aria-pressed="false">{f}</button>
+          ))}
+        </div>
+        <div class="filters__group">
+          <span class="filters__label">Finish</span>
+          <button type="button" class="chip is-active" data-filter="finish" data-value="all" aria-pressed="true">All</button>
+          {finishes.map((f) => (
+            <button type="button" class="chip" data-filter="finish" data-value={f} aria-pressed="false">{f}</button>
+          ))}
+        </div>
+      </div>
+
+      <ul class="designs" data-designs>
+        {
+          designs.map((d) => (
+            <li class="design" data-family={d.family} data-finish={d.finish}>
+              <a href={`/colours/${d.slug}`}>
+                <Image
+                  src={vadaraImage(d.slab)!}
+                  alt={`${d.name} quartz slab, ${d.short}`}
+                  widths={[400, 800]}
+                  sizes="(min-width: 60rem) 25vw, (min-width: 40rem) 33vw, 50vw"
+                  loading="lazy"
+                  decoding="async"
+                  class="design__img"
+                />
+                <span class="design__name">
+                  {d.name}
+                  {d.isNew && <span class="design__new">New</span>}
+                </span>
+                <span class="design__meta">{d.collection} · {d.finish}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="muted" data-designs-empty hidden>Nothing matches that combination.</p>
+
+      <p class="credit">
+        Product names, descriptions and images are Vadara's, shown here as a stockist. We fit other
+        quartz brands too, so if you have seen a colour elsewhere, ask.
+      </p>
+    </div>
+  </section>
+
+  <section class="band band--alt">
+    <div class="container">
+      <EnquiryForm heading="Ask about a colour" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .band {
+    padding-block: clamp(2.25rem, 4vw, 3.5rem);
+  }
+  .band--alt {
+    background: var(--stone-50);
+  }
+  .head {
+    max-width: 44rem;
+    margin-bottom: 1.5rem;
+  }
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2.5rem;
+    margin-bottom: 1.5rem;
+    padding-block: 1rem;
+    border-top: 1px solid var(--stone-100);
+    border-bottom: 1px solid var(--stone-100);
+  }
+  .filters__group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .filters__label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: 0.4rem;
+  }
+  .chip {
+    font: inherit;
+    font-size: 0.9rem;
+    background: #fff;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    min-height: 2.25rem;
+    cursor: pointer;
+  }
+  .chip:hover {
+    border-color: var(--teal);
+    color: var(--teal-dark);
+  }
+  .chip.is-active {
+    background: var(--teal-dark);
+    border-color: var(--teal-dark);
+    color: #fff;
+  }
+  .designs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.75rem 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  }
+  .design a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .design__img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    background: var(--stone-100);
+  }
+  .design__name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.7rem;
+    font-weight: 700;
+  }
+  .design a:hover .design__name {
+    color: var(--teal-dark);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+  .design__new {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+  }
+  .design__meta {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .credit {
+    margin-top: 2.5rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    max-width: 60ch;
+  }
+</style>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  const items = document.querySelectorAll<HTMLElement>('[data-designs] > li');
+  const empty = document.querySelector<HTMLElement>('[data-designs-empty]');
+  const active: Record<string, string> = { family: 'all', finish: 'all' };
+
+  function apply() {
+    let shown = 0;
+    items.forEach((li) => {
+      const ok =
+        (active.family === 'all' || li.dataset.family === active.family) &&
+        (active.finish === 'all' || li.dataset.finish === active.finish);
+      li.hidden = !ok;
+      if (ok) shown++;
+    });
+    if (empty) empty.hidden = shown > 0;
+  }
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const key = chip.dataset.filter!;
+      active[key] = chip.dataset.value!;
+      chips.forEach((c) => {
+        if (c.dataset.filter !== key) return;
+        const on = c === chip;
+        c.classList.toggle('is-active', on);
+        c.setAttribute('aria-pressed', String(on));
+      });
+      apply();
+    });
+  });
+</script>

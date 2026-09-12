@@ -1,0 +1,251 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import EnquiryForm from '../../components/EnquiryForm.astro';
+import Photo from '../../components/Photo.astro';
+import { vadara, type VadaraDesign } from '../../data/vadara';
+import { vadaraImage } from '../../lib/vadaraImages';
+
+export function getStaticPaths() {
+  return vadara.map((d) => ({ params: { slug: d.slug }, props: { design: d } }));
+}
+
+interface Props {
+  design: VadaraDesign;
+}
+const { design: d } = Astro.props;
+const slab = vadaraImage(d.slab);
+const scenes = d.scenes.map(vadaraImage).filter(Boolean);
+const renders = d.renders.map(vadaraImage).filter(Boolean);
+const related = vadara.filter((x) => x.slug !== d.slug && x.family === d.family && vadaraImage(x.slab)).slice(0, 4);
+
+const specs = [
+  ['Collection', d.collection],
+  ['Finish', d.finish],
+  ['Thickness', d.thickness],
+  ['Slab size', d.slabSize],
+  ['Style', d.inspiration],
+  ['Background', d.background],
+  ['Veining', d.vein],
+  ['Hue', d.hue],
+  ['Features', d.features],
+].filter(([, v]) => v);
+
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: `Vadara ${d.name} quartz worktop`,
+  brand: { '@type': 'Brand', name: 'Vadara' },
+  description: d.short,
+  category: 'Quartz worktops',
+};
+---
+
+<Layout
+  title={`${d.name} quartz worktop by Vadara`}
+  description={`${d.name}: ${d.short}. Supplied, templated and fitted across Cheshire, Manchester and North Wales by Cheshire Stoneworks.`}
+  schema={[productSchema]}
+>
+  <section class="band">
+    <div class="container">
+      <p class="crumbs"><a href="/colours">Colours</a> / {d.collection}</p>
+      <div class="top">
+        <div class="top__img">
+          {slab && (
+            <Image
+              src={slab}
+              alt={`${d.name} quartz slab, ${d.short}`}
+              widths={[600, 1000, 1600]}
+              sizes="(min-width: 60rem) 60vw, 100vw"
+              loading="eager"
+              class="slab"
+            />
+          )}
+          <p class="credit">Slab photograph by Vadara.</p>
+        </div>
+        <div class="top__text">
+          <span class="eyebrow">Vadara quartz {d.code && <>· {d.code}</>}</span>
+          <h1>{d.name}</h1>
+          <p class="lead">{d.short}</p>
+          <dl class="specs">
+            {specs.map(([k, v]) => (
+              <>
+                <dt>{k}</dt>
+                <dd>{v}</dd>
+              </>
+            ))}
+          </dl>
+          <a class="btn" href="#enquire">Get a quote in {d.name}</a>
+          <p class="muted small">Ask for a sample. We bring full-size pieces to the template visit.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {
+    d.story && (
+      <section class="band band--alt">
+        <div class="container">
+          <div class="story">
+            {d.storyTitle && <h2>{d.storyTitle}</h2>}
+            <p>{d.story}</p>
+            <p class="muted small">Design notes by Vadara.</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    scenes.length > 0 && (
+      <section class="band">
+        <div class="container">
+          <h2>{d.name} in real kitchens</h2>
+          <p class="muted">Installations photographed by Vadara. Not our work, but the same material.</p>
+          <div class="scenes">
+            {scenes.map((img, i) => (
+              <Photo image={img} alt={`${d.name} quartz worktop installed in a kitchen`} credit="Vadara installation photo" sizes="(min-width: 60rem) 33vw, 100vw" class={i === 0 ? 'scenes__lead' : ''} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    renders.length > 0 && (
+      <section class="band">
+        <div class="container">
+          <h2>How {d.name} could look</h2>
+          <p class="muted">These are computer-generated visualisations from Vadara, not photographs.</p>
+          <div class="scenes">
+            {renders.map((img, i) => (
+              <Photo image={img} alt={`Computer-generated visualisation of ${d.name} quartz in a kitchen`} credit="Vadara visualisation (CGI)" sizes="(min-width: 60rem) 33vw, 100vw" class={i === 0 ? 'scenes__lead' : ''} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    related.length > 0 && (
+      <section class="band band--alt">
+        <div class="container">
+          <h2>Similar tones</h2>
+          <ul class="related">
+            {related.map((r) => (
+              <li>
+                <a href={`/colours/${r.slug}`}>
+                  <Image src={vadaraImage(r.slab)!} alt={`${r.name} quartz slab`} widths={[300, 600]} sizes="(min-width: 60rem) 20vw, 50vw" loading="lazy" class="related__img" />
+                  <span>{r.name}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p><a href="/colours">All colours</a></p>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="band">
+    <div class="container">
+      <EnquiryForm heading={`Get a quote in ${d.name}`} />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .band {
+    padding-block: clamp(2.25rem, 4vw, 3.5rem);
+  }
+  .band--alt {
+    background: var(--stone-50);
+  }
+  .crumbs {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .top {
+    display: grid;
+    gap: 2rem 3rem;
+    align-items: start;
+  }
+  @media (min-width: 56rem) {
+    .top {
+      grid-template-columns: 3fr 2fr;
+    }
+  }
+  .slab {
+    width: 100%;
+    border-radius: var(--radius);
+    background: var(--stone-100);
+  }
+  .credit,
+  .small {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+  .top__text h1 {
+    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+  }
+  .specs {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.4rem 1.5rem;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+    border-top: 1px solid var(--stone-100);
+    padding-top: 1rem;
+  }
+  .specs dt {
+    color: var(--muted);
+  }
+  .specs dd {
+    margin: 0;
+  }
+  .story {
+    max-width: 60ch;
+  }
+  .scenes {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    margin-top: 1.5rem;
+  }
+  .scenes :global(.photo) {
+    aspect-ratio: 4 / 3;
+  }
+  @media (min-width: 60rem) {
+    .scenes {
+      grid-template-columns: 2fr 1fr;
+    }
+    .scenes :global(.scenes__lead) {
+      grid-row: span 2;
+      aspect-ratio: auto;
+    }
+  }
+  .related {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 1.5rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr));
+  }
+  .related a {
+    text-decoration: none;
+    color: inherit;
+    font-weight: 700;
+  }
+  .related__img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.5rem;
+  }
+</style>

@@ -42,11 +42,37 @@ All copy is in a handful of obvious files. Nothing business-specific is in compo
 | `src/data/pricing.ts` | Price drivers and the published range for a typical kitchen |
 | `src/data/faqs.ts` | FAQs per page (also emitted as FAQPage schema) |
 | `src/data/gallery.ts` | Gallery entries. Instructions for adding photos are at the top of the file |
+| `src/data/vadara.ts` | Generated Vadara product library (28 designs). Do not hand-edit; see below |
+| `src/data/swatches.ts` | Which ten Vadara designs feature on the home page, and their relative cost bands |
 | `src/pages/*.astro` | Page structure and the longer prose (materials, how it works, about, privacy, terms) |
 
 Placeholders are wrapped in `TODO('…')` in data files and `[TODO: …]` in pages. They render
 visibly on the page so nothing fake slips through, and any `TODO` value in `site.ts` is left out of
 the structured data rather than being published to Google.
+
+## Vadara product library
+
+The `/colours` page and the home-page swatch grid are built from Vadara's public product pages,
+pulled by script rather than typed in. To refresh when Vadara adds or drops a design:
+
+```bash
+node scripts/import-vadara.mjs ../vadara-originals
+```
+
+```bash
+node scripts/import-vadara-images.mjs ../vadara-originals
+```
+
+The first writes `src/data/vadara.ts` and downloads the originals (about 170 MB) to the folder
+you name. The second resizes them into `src/assets/images/vadara/` (about 15 MB, committed).
+Each design gets one slab photo, up to three installation photographs and up to three CGI renders.
+Renders are labelled as visualisations on the page, never presented as photos.
+
+**Permission.** Product names, descriptions and images are Vadara's copyright. They are used
+here as a stockist showing the range, credited on every page where they appear, and never
+described as our own work. Get Vadara's written OK, through your distributor, a media pack or
+the dealer agreement, before the site goes live. If they say no, delete `src/assets/images/vadara/`
+and the `/colours` pages and the rest of the site still builds.
 
 ## Deploy to Cloudflare Pages
 
@@ -252,6 +278,16 @@ WebP so it should hold above 95.
 13. **Headless Chrome is assumed for Lighthouse.** The script uses whatever `npx lighthouse` finds.
 14. **The hatched "Photo to follow" blocks** are the only decorative element on the site and are
     meant to be replaced. They are labelled so nobody mistakes them for stock imagery.
+15. **Design direction changed after the first build.** The home page was rebuilt on the
+    structure of geminiworktops.com at your request: split hero, swatch grid, feature row,
+    comparison table, four steps, reviews, dark panels, gallery row, FAQ, form. Warm sand and
+    near-black panels replace most of the teal, which is now reserved for buttons and links.
+16. **Web font.** The brief said system fonts only. You chose to relax that, so the site uses
+    Manrope, self-hosted via `@fontsource-variable/manrope` (28 KB, OFL licence). No request
+    to Google Fonts. Remove the import in `Layout.astro` and the font stack falls back to Arial.
+17. **Supplier photography.** Hero, panel and swatch images on the home page are Vadara's,
+    credited on the image. They stand in until your own install photos exist. Swap them by
+    changing the filenames in `index.astro` or by adding real photos to `gallery.ts`.
 
 ## Structure
 
@@ -259,10 +295,12 @@ WebP so it should hold above 95.
 functions/api/enquiry.ts   Pages Function: validate, honeypot, Turnstile, forward to n8n
 public/_headers            Security headers and caching for Cloudflare Pages
 public/favicon.svg
-scripts/                   test-form, lighthouse, placeholders
+scripts/                   test-form, lighthouse, placeholders, import-vadara, import-vadara-images
+src/assets/images/vadara/  Resized Vadara product images (generated)
 src/data/                  All business content (see table above)
+src/lib/vadaraImages.ts    Filename to image lookup for the Vadara library
 src/layouts/Layout.astro   Head, meta, LocalBusiness schema, header, footer
-src/components/            Header, Footer, EnquiryForm, Faq, Placeholder
-src/pages/                 One file per page, plus robots.txt
+src/components/            Header, Footer, EnquiryForm, Faq, Placeholder, Photo
+src/pages/                 One file per page, colours/ (library + 28 detail pages), robots.txt
 src/styles/global.css      Brand tokens and shared styles
 ```

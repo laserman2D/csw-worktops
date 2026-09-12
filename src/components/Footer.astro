@@ -34,6 +34,7 @@ const reviewLinks = Object.values(site.reviews).filter((r) => r.url);
       <div>
         <h2 class="site-footer__h">Pages</h2>
         <ul class="site-footer__list">
+          <li><a href="/colours">Colours</a></li>
           <li><a href="/materials">Materials</a></li>
           <li><a href="/how-it-works">How it works</a></li>
           <li><a href="/gallery">Gallery</a></li>
@@ -71,9 +72,8 @@ const reviewLinks = Object.values(site.reviews).filter((r) => r.url);
 
 <style>
   .site-footer {
-    background: var(--teal-light);
-    border-top: 1px solid var(--border);
-    padding-block: 3rem 2rem;
+    background: var(--stone-100);
+    padding-block: 4rem 2.5rem;
     font-size: 0.95rem;
   }
   .site-footer__grid {

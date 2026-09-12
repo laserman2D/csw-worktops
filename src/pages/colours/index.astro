@@ -6,25 +6,60 @@ import { vadara, families, finishes } from '../../data/vadara';
 import { vadaraImage } from '../../lib/vadaraImages';
 
 const designs = vadara.filter((d) => vadaraImage(d.slab));
+
+// Vadara's five collections, in the order we want them shown, with our own
+// one-line summary of what each group is. Edit freely.
+const groups = [
+  {
+    name: 'Threads of Nature',
+    blurb: 'Bold marble looks with strong, flowing veins. The classic Calacatta-style whites, plus warmer golds.',
+  },
+  {
+    name: 'Hidden Inspiration',
+    blurb: 'Bright white bases with unusual vein colours: blues, rusts, taupes. For a kitchen that is not quite like anyone else’s.',
+  },
+  {
+    name: 'Infusions',
+    blurb: 'Quartzite and stone effects on soft, natural backgrounds. Includes the newer beige and leathered designs.',
+  },
+  {
+    name: 'Ebbs and Flows',
+    blurb: 'Gentler patterns and subtle contrast. Quieter marbles and the new warm neutrals.',
+  },
+  {
+    name: 'Divine Natural Majesty',
+    blurb: 'Soft, still patterns. Currently one design, a classic Carrara look.',
+  },
+].map((g) => ({ ...g, items: designs.filter((d) => d.collection === g.name) }))
+  .filter((g) => g.items.length);
+
+const ungrouped = designs.filter((d) => !groups.some((g) => g.name === d.collection));
+if (ungrouped.length) groups.push({ name: 'Other designs', blurb: '', items: ungrouped });
 ---
 
 <Layout
-  title="Quartz worktop colours: the Vadara range"
-  description="Browse the full Vadara quartz range we supply and fit: white, beige, grey and dark marble-effect and quartzite-effect designs, with slab photos and real installations. Samples brought to your kitchen."
+  title="Quartz worktop colours: the Vadara range by collection"
+  description="Browse the full Vadara quartz range we supply and fit, grouped by collection: Threads of Nature, Hidden Inspiration, Infusions, Ebbs and Flows and Divine Natural Majesty. Slab photos and real installations. Samples brought to your kitchen."
 >
   <section class="band">
     <div class="container">
       <div class="head">
-        <div>
-          <span class="eyebrow">Colours</span>
-          <h1>Vadara quartz, the full range</h1>
-          <p class="lead">
-            {designs.length} designs across five collections. Marble and quartzite looks on a
-            consistent quartz base, in 20mm and 30mm. Pick a few and we bring full-size samples to
-            the template visit.
-          </p>
-        </div>
+        <span class="eyebrow">Colours</span>
+        <h1>Vadara quartz, by collection</h1>
+        <p class="lead">
+          {designs.length} designs in five collections. Marble and quartzite looks on a consistent
+          quartz base, in 20mm and 30mm. Pick a few and we bring full-size samples to the template
+          visit.
+        </p>
       </div>
+
+      <nav class="jump" aria-label="Collections">
+        {groups.map((g) => (
+          <a href={`#${g.name.toLowerCase().replace(/[^a-z]+/g, '-')}`}>
+            {g.name} <span class="muted">({g.items.length})</span>
+          </a>
+        ))}
+      </nav>
 
       <div class="filters" role="group" aria-label="Filter designs">
         <div class="filters__group">
@@ -42,36 +77,50 @@ const designs = vadara.filter((d) => vadaraImage(d.slab));
           ))}
         </div>
       </div>
+    </div>
+  </section>
 
-      <ul class="designs" data-designs>
-        {
-          designs.map((d) => (
-            <li class="design" data-family={d.family} data-finish={d.finish}>
-              <a href={`/colours/${d.slug}`}>
-                <Image
-                  src={vadaraImage(d.slab)!}
-                  alt={`${d.name} quartz slab, ${d.short}`}
-                  widths={[400, 800]}
-                  sizes="(min-width: 60rem) 25vw, (min-width: 40rem) 33vw, 50vw"
-                  loading="lazy"
-                  decoding="async"
-                  class="design__img"
-                />
-                <span class="design__name">
-                  {d.name}
-                  {d.isNew && <span class="design__new">New</span>}
-                </span>
-                <span class="design__meta">{d.collection} · {d.finish}</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-      <p class="muted" data-designs-empty hidden>Nothing matches that combination.</p>
+  {
+    groups.map((g, i) => (
+      <section class:list={['band', 'group', { 'band--alt': i % 2 === 1 }]} id={g.name.toLowerCase().replace(/[^a-z]+/g, '-')} data-group>
+        <div class="container">
+          <div class="group__head">
+            <h2>{g.name}</h2>
+            {g.blurb && <p class="muted">{g.blurb}</p>}
+          </div>
+          <ul class="designs">
+            {g.items.map((d) => (
+              <li class="design" data-family={d.family} data-finish={d.finish}>
+                <a href={`/colours/${d.slug}`}>
+                  <Image
+                    src={vadaraImage(d.slab)!}
+                    alt={`${d.name} quartz slab, ${d.short}`}
+                    widths={[400, 800]}
+                    sizes="(min-width: 60rem) 20vw, (min-width: 40rem) 33vw, 50vw"
+                    loading="lazy"
+                    decoding="async"
+                    class="design__img"
+                  />
+                  <span class="design__name">
+                    {d.name}
+                    {d.isNew && <span class="design__new">New</span>}
+                  </span>
+                  <span class="design__meta">{d.finish}{d.code && <> · {d.code}</>}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p class="muted group__empty" data-group-empty hidden>No {g.name} designs match that filter.</p>
+        </div>
+      </section>
+    ))
+  }
 
+  <section class="band">
+    <div class="container">
       <p class="credit">
-        Product names, descriptions and images are Vadara's, shown here as a stockist. We fit other
-        quartz brands too, so if you have seen a colour elsewhere, ask.
+        Collection names, product names, descriptions and images are Vadara's, shown here as a
+        stockist. We fit other quartz brands too, so if you have seen a colour elsewhere, ask.
       </p>
     </div>
   </section>
@@ -85,7 +134,7 @@ const designs = vadara.filter((d) => vadaraImage(d.slab));
 
 <style>
   .band {
-    padding-block: clamp(2.25rem, 4vw, 3.5rem);
+    padding-block: clamp(2rem, 4vw, 3rem);
   }
   .band--alt {
     background: var(--stone-50);
@@ -94,11 +143,26 @@ const designs = vadara.filter((d) => vadaraImage(d.slab));
     max-width: 44rem;
     margin-bottom: 1.5rem;
   }
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+  }
+  .jump a {
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 2px solid var(--teal-light);
+    padding-bottom: 0.1rem;
+  }
+  .jump a:hover {
+    border-bottom-color: var(--teal);
+  }
   .filters {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem 2.5rem;
-    margin-bottom: 1.5rem;
     padding-block: 1rem;
     border-top: 1px solid var(--stone-100);
     border-bottom: 1px solid var(--stone-100);
@@ -136,13 +200,30 @@ const designs = vadara.filter((d) => vadaraImage(d.slab));
     border-color: var(--teal-dark);
     color: #fff;
   }
+  .group {
+    scroll-margin-top: 6rem;
+  }
+  .group__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .group__head h2 {
+    margin: 0;
+  }
+  .group__head p {
+    margin: 0;
+    max-width: 60ch;
+  }
   .designs {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
-    gap: 1.75rem 1.25rem;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+    gap: 1.5rem 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
   }
   .design a {
     display: block;
@@ -182,30 +263,35 @@ const designs = vadara.filter((d) => vadaraImage(d.slab));
     font-size: 0.85rem;
     color: var(--muted);
   }
+  .group__empty {
+    margin: 0;
+  }
   .credit {
-    margin-top: 2.5rem;
     font-size: 0.85rem;
     color: var(--muted);
     max-width: 60ch;
+    margin: 0;
   }
 </style>
 
 <script>
   const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
-  const items = document.querySelectorAll<HTMLElement>('[data-designs] > li');
-  const empty = document.querySelector<HTMLElement>('[data-designs-empty]');
+  const groups = document.querySelectorAll<HTMLElement>('[data-group]');
   const active: Record<string, string> = { family: 'all', finish: 'all' };
 
   function apply() {
-    let shown = 0;
-    items.forEach((li) => {
-      const ok =
-        (active.family === 'all' || li.dataset.family === active.family) &&
-        (active.finish === 'all' || li.dataset.finish === active.finish);
-      li.hidden = !ok;
-      if (ok) shown++;
+    groups.forEach((g) => {
+      let shown = 0;
+      g.querySelectorAll<HTMLElement>('.design').forEach((li) => {
+        const ok =
+          (active.family === 'all' || li.dataset.family === active.family) &&
+          (active.finish === 'all' || li.dataset.finish === active.finish);
+        li.hidden = !ok;
+        if (ok) shown++;
+      });
+      const empty = g.querySelector<HTMLElement>('[data-group-empty]');
+      if (empty) empty.hidden = shown > 0;
     });
-    if (empty) empty.hidden = shown > 0;
   }
 
   chips.forEach((chip) => {

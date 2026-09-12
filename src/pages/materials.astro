@@ -1,0 +1,169 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Placeholder from '../components/Placeholder.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import { materials, comparisonRows, ratingWords } from '../data/materials';
+---
+
+<Layout
+  title="Quartz vs granite vs Dekton: an honest comparison"
+  description="How quartz, granite and ultra-compact worktops actually compare on cost, heat, staining, chipping and repair, from people who fit all three every week. Including where each one lets you down."
+>
+  <section class="section">
+    <div class="container">
+      <div class="prose">
+        <span class="eyebrow">Materials</span>
+        <h1>Quartz, granite or ultra-compact. Which one, honestly.</h1>
+        <p class="lead">
+          We fit all three and we make the same money on each. So this page is not trying to sell you
+          one. It is what we tell friends who ask.
+        </p>
+        <p>
+          The short version: quartz is the safe choice for most kitchens, as long as you use a trivet.
+          Granite is for people who want real stone and will look after it. Ultra-compact is the
+          toughest surface you can buy, and the one most likely to chip on a corner.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <h2>Side by side</h2>
+      <p class="muted" style="max-width: var(--measure)">
+        Ratings are our own, from fitting and going back to these materials over years. They are
+        relative to each other, not to laminate or timber. Cost bands are relative; the
+        <a href="/pricing">pricing guide</a> explains what drives the actual number.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <caption class="sr-only">Comparison of quartz, granite and ultra-compact worktops</caption>
+          <thead>
+            <tr>
+              <th scope="col">Property</th>
+              {materials.map((m) => <th scope="col">{m.name}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Relative cost</th>
+              {materials.map((m) => <td>{m.costBand}</td>)}
+            </tr>
+            {
+              comparisonRows.map((row) => (
+                <tr>
+                  <th scope="row">
+                    {row.label}
+                    <span class="muted" style="display:block;font-weight:400;font-size:0.85em">{row.note}</span>
+                  </th>
+                  {materials.map((m) => {
+                    const score = m.scores[row.key];
+                    return (
+                      <td>
+                        <span class="dots" aria-hidden="true">
+                          {[1, 2, 3, 4, 5].map((i) => (
+                            <i class:list={['dot', { on: i <= score }]} />
+                          ))}
+                        </span>
+                        <span class="sr-only">{score} out of 5, </span>
+                        <span class="rating-word">{ratingWords[score]}</span>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))
+            }
+            <tr>
+              <th scope="row">Needs sealing</th>
+              <td>No</td>
+              <td>Yes. On install and every year or two.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <th scope="row">Standard thickness</th>
+              <td>20mm or 30mm</td>
+              <td>20mm or 30mm</td>
+              <td>12mm or 20mm</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  {
+    materials.map((m, i) => (
+      <section class:list={['section', { 'section--alt': i % 2 === 1 }]} id={m.slug}>
+        <div class="container mat-detail">
+          <div class="mat-detail__text prose">
+            <h2>{m.name}</h2>
+            <p class="lead">{m.short}</p>
+            <h3>Brands we supply</h3>
+            <p>{m.brands.join(', ')}</p>
+            <h3>Good for</h3>
+            <ul>
+              {m.goodFor.map((g) => (
+                <li>{g}</li>
+              ))}
+            </ul>
+            <h3>Where it lets you down</h3>
+            <ul>
+              {m.letsYouDown.map((g) => (
+                <li>{g}</li>
+              ))}
+            </ul>
+            <h3>Looking after it</h3>
+            <p>{m.care}</p>
+          </div>
+          <div class="mat-detail__img">
+            <Placeholder caption={`${m.name} worktop, one of our installs`} ratio="4 / 5" />
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="section section--teal">
+    <div class="container">
+      <EnquiryForm heading="Not sure which? Ask us." />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .dots {
+    display: inline-flex;
+    gap: 3px;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    display: inline-block;
+  }
+  .dot.on {
+    background: var(--teal);
+  }
+  .rating-word {
+    font-size: 0.85em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .mat-detail {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (min-width: 56rem) {
+    .mat-detail {
+      grid-template-columns: 3fr 2fr;
+    }
+    .mat-detail__img {
+      position: sticky;
+      top: 5.5rem;
+    }
+  }
+</style>

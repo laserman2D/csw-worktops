@@ -1,0 +1,14 @@
+# Copy to .dev.vars for `npm run pages:dev` (runs the Pages Function locally).
+# In production, set these as Environment Variables on the Cloudflare Pages
+# project (Settings > Environment variables), NOT in the repo.
+
+# Your n8n webhook. Never hardcode this in the source.
+ENQUIRY_WEBHOOK_URL=https://n8n.cheshirestoneworks.co.uk/webhook/REPLACE-ME
+
+# Optional shared secret sent as the X-Enquiry-Token header so n8n can reject
+# posts that did not come from the site. Check the same value in n8n.
+ENQUIRY_WEBHOOK_TOKEN=change-me
+
+# Cloudflare Turnstile secret key. The value below is Cloudflare's
+# "always passes" test secret. Replace with the real secret in production.
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA

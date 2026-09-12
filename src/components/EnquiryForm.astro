@@ -1,0 +1,362 @@
+---
+import { site, isPlaceholder } from '../data/site';
+
+interface Props {
+  heading?: string;
+  id?: string;
+}
+const { heading = 'Get a quote', id = 'enquire' } = Astro.props;
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+const hasPhone = !isPlaceholder(site.contact.phoneE164);
+const hasEmail = !isPlaceholder(site.contact.email);
+---
+
+<section class="enquiry" id={id} aria-labelledby={`${id}-heading`}>
+  <div class="enquiry__intro">
+    <h2 id={`${id}-heading`}>{heading}</h2>
+    <p>
+      Tell us about the kitchen and we will come back with an indicative price and the next available
+      survey date. A photo of the plan, or a rough sketch with measurements, gets you a more accurate
+      figure.
+    </p>
+    <p class="muted">
+      Prefer to talk? {hasPhone ? <a href={`tel:${site.contact.phoneE164}`}>{site.contact.phoneDisplay}</a> : site.contact.phoneDisplay}
+      {site.contact.whatsapp && (
+        <>
+          {' '}or <a href={`https://wa.me/${site.contact.whatsapp}`} rel="noopener">WhatsApp us</a>
+        </>
+      )}
+      . {site.contact.hoursText}.
+    </p>
+  </div>
+
+  <form
+    class="enquiry__form"
+    method="post"
+    action="/api/enquiry"
+    enctype="multipart/form-data"
+    novalidate
+    data-enquiry-form
+  >
+    <div class="notice notice--error" data-form-error hidden role="alert"></div>
+
+    <div class="grid grid--2">
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required minlength="2" aria-describedby="e-name" />
+        <p class="error" id="e-name">Please enter your name.</p>
+      </div>
+      <div class="field">
+        <label for="f-phone">Phone</label>
+        <input id="f-phone" name="phone" type="tel" autocomplete="tel" required inputmode="tel" aria-describedby="e-phone" />
+        <p class="error" id="e-phone">Please enter a phone number we can call.</p>
+      </div>
+      <div class="field">
+        <label for="f-email">Email</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="e-email" />
+        <p class="error" id="e-email">Please enter a valid email address.</p>
+      </div>
+      <div class="field">
+        <label for="f-postcode">Postcode</label>
+        <span class="hint" id="h-postcode">So we can confirm you are in our area.</span>
+        <input
+          id="f-postcode"
+          name="postcode"
+          type="text"
+          autocomplete="postal-code"
+          required
+          maxlength="10"
+          aria-describedby="h-postcode e-postcode"
+          style="text-transform: uppercase"
+        />
+        <p class="error" id="e-postcode">Please enter a UK postcode.</p>
+      </div>
+    </div>
+
+    <fieldset class="field">
+      <legend>Where is the kitchen up to?</legend>
+      <div class="choices" role="radiogroup" aria-describedby="e-kitchen_status">
+        <label><input type="radio" name="kitchen_status" value="designed" required /> Designed, not yet fitted</label>
+        <label><input type="radio" name="kitchen_status" value="being-fitted" /> Being fitted now</label>
+        <label><input type="radio" name="kitchen_status" value="fitted" /> Fitted and ready for worktops</label>
+      </div>
+      <p class="error" id="e-kitchen_status">Tell us where the kitchen is up to.</p>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend>Material you are interested in</legend>
+      <div class="choices" role="radiogroup" aria-describedby="e-material">
+        <label><input type="radio" name="material" value="quartz" required /> Quartz</label>
+        <label><input type="radio" name="material" value="granite" /> Granite</label>
+        <label><input type="radio" name="material" value="ultra-compact" /> Ultra-compact (Dekton and similar)</label>
+        <label><input type="radio" name="material" value="not-sure" /> Not sure yet</label>
+      </div>
+      <p class="error" id="e-material">Choose a material, or "not sure".</p>
+    </fieldset>
+
+    <div class="grid grid--2">
+      <div class="field">
+        <label for="f-size">Rough size</label>
+        <span class="hint" id="h-size">Square metres if you know it, or how many runs and an island.</span>
+        <input id="f-size" name="size" type="text" required aria-describedby="h-size e-size" placeholder="e.g. 3 runs and an island" />
+        <p class="error" id="e-size">A rough size helps. Metres, or the number of runs.</p>
+      </div>
+      <div class="field">
+        <label for="f-timescale">When do you need them?</label>
+        <select id="f-timescale" name="timescale" required aria-describedby="e-timescale">
+          <option value="">Choose one</option>
+          <option value="asap">As soon as possible</option>
+          <option value="1-month">Within a month</option>
+          <option value="1-3-months">One to three months</option>
+          <option value="3-plus-months">More than three months away</option>
+          <option value="not-sure">Not sure yet</option>
+        </select>
+        <p class="error" id="e-timescale">Choose a timescale.</p>
+      </div>
+    </div>
+
+    <div class="field field--optional">
+      <label for="f-message">Anything else</label>
+      <textarea id="f-message" name="message" maxlength="4000" aria-describedby="h-message"></textarea>
+      <span class="hint" id="h-message">Sink and hob type, edge profile, splashbacks, access, old worktops to remove.</span>
+    </div>
+
+    <div class="field field--optional">
+      <label for="f-plan">Kitchen plan, sketch or photo</label>
+      <span class="hint" id="h-plan">One file, up to 8 MB. JPEG, PNG, HEIC or PDF.</span>
+      <input id="f-plan" name="plan" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf" aria-describedby="h-plan e-plan" />
+      <p class="error" id="e-plan">Please upload a photo or PDF under 8 MB.</p>
+    </div>
+
+    <!-- Honeypot. Hidden from people, tempting to bots. -->
+    <div class="hp" aria-hidden="true">
+      <label for="f-website">Leave this field empty</label>
+      <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="field">
+      <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light" data-size="flexible"></div>
+    </div>
+
+    <p class="enquiry__consent muted">
+      We use what you send us to reply to your enquiry and, if you go ahead, to do the job. See the
+      <a href="/privacy">privacy policy</a>.
+    </p>
+
+    <button class="btn" type="submit" data-submit>Send enquiry</button>
+  </form>
+
+  <div class="notice notice--success enquiry__done" data-form-success hidden tabindex="-1">
+    <h3>Thanks, we have your enquiry.</h3>
+    <p>
+      We will read it and come back to you by phone or email {site.leadTimes.enquiryToSurvey}, usually
+      sooner, with an indicative price and the next available survey date.
+    </p>
+    <p>
+      If you need to add anything, {hasEmail ? <a href={`mailto:${site.contact.email}`}>email us</a> : 'email us'}
+      {hasPhone && <> or call <a href={`tel:${site.contact.phoneE164}`}>{site.contact.phoneDisplay}</a></>}.
+    </p>
+  </div>
+</section>
+
+<style>
+  .enquiry {
+    display: grid;
+    gap: 2rem 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    align-items: start;
+  }
+  .enquiry__intro {
+    max-width: 34rem;
+  }
+  .enquiry__form {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: clamp(1.25rem, 3vw, 2rem);
+    box-shadow: var(--shadow);
+  }
+  .enquiry__form .grid {
+    gap: 0 1.25rem;
+  }
+  .enquiry__consent {
+    font-size: 0.875rem;
+  }
+  .enquiry__done h3 {
+    margin-top: 0;
+  }
+  @media (min-width: 60rem) {
+    .enquiry {
+      grid-template-columns: 2fr 3fr;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-enquiry-form]');
+
+  // Load Turnstile only once the form is near the viewport, so it does not
+  // cost anything on pages where nobody scrolls to the form.
+  function loadTurnstile() {
+    if (document.querySelector('script[data-turnstile]')) return;
+    const s = document.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    s.async = true;
+    s.defer = true;
+    s.dataset.turnstile = '1';
+    document.head.appendChild(s);
+  }
+  if (form) {
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            loadTurnstile();
+            io.disconnect();
+          }
+        },
+        { rootMargin: '400px' },
+      );
+      io.observe(form);
+    } else {
+      loadTurnstile();
+    }
+    form.addEventListener('focusin', loadTurnstile, { once: true });
+  }
+
+  const POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
+  const PHONE_RE = /^\+?[\d\s().-]{9,20}$/;
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const MAX_FILE = 8 * 1024 * 1024;
+
+  function fieldWrap(name: string): HTMLElement | null {
+    const el = form?.querySelector<HTMLElement>(`[name="${name}"]`);
+    return el?.closest('.field') ?? null;
+  }
+
+  function setError(name: string, message?: string) {
+    const wrap = fieldWrap(name);
+    if (!wrap) return;
+    const err = wrap.querySelector<HTMLElement>('.error');
+    const inputs = wrap.querySelectorAll<HTMLInputElement>('input, select, textarea');
+    if (message) {
+      wrap.classList.add('is-invalid');
+      if (err) err.textContent = message;
+      inputs.forEach((i) => i.setAttribute('aria-invalid', 'true'));
+    } else {
+      wrap.classList.remove('is-invalid');
+      inputs.forEach((i) => i.removeAttribute('aria-invalid'));
+    }
+  }
+
+  function validate(): Record<string, string> {
+    if (!form) return {};
+    const fd = new FormData(form);
+    const v = (k: string) => String(fd.get(k) ?? '').trim();
+    const errors: Record<string, string> = {};
+    if (v('name').length < 2) errors.name = 'Please enter your name.';
+    if (!PHONE_RE.test(v('phone'))) errors.phone = 'Please enter a phone number we can call.';
+    if (!EMAIL_RE.test(v('email'))) errors.email = 'Please enter a valid email address.';
+    if (!POSTCODE_RE.test(v('postcode'))) errors.postcode = 'Please enter a UK postcode, for example WA13 0AA.';
+    if (!v('kitchen_status')) errors.kitchen_status = 'Tell us where the kitchen is up to.';
+    if (!v('material')) errors.material = 'Choose a material, or "not sure".';
+    if (!v('size')) errors.size = 'A rough size helps. Metres, or the number of runs.';
+    if (!v('timescale')) errors.timescale = 'Choose a timescale.';
+    const file = fd.get('plan');
+    if (file instanceof File && file.size > 0) {
+      if (file.size > MAX_FILE) errors.plan = 'That file is over 8 MB. Please send a smaller one, or email it to us after.';
+      else if (!/^(image\/(jpeg|png|webp|heic|heif)|application\/pdf)$/.test(file.type))
+        errors.plan = 'Please upload a photo (JPEG, PNG, HEIC) or a PDF.';
+    }
+    return errors;
+  }
+
+  function showErrors(errors: Record<string, string>) {
+    const names = ['name', 'phone', 'email', 'postcode', 'kitchen_status', 'material', 'size', 'timescale', 'plan'];
+    names.forEach((n) => setError(n, errors[n]));
+    const first = Object.keys(errors)[0];
+    if (first) {
+      const el = form?.querySelector<HTMLElement>(`[name="${first}"]`);
+      el?.focus();
+    }
+  }
+
+  if (form) {
+    const submitBtn = form.querySelector<HTMLButtonElement>('[data-submit]');
+    const errorBox = form.querySelector<HTMLElement>('[data-form-error]');
+    const success = document.querySelector<HTMLElement>('[data-form-success]');
+
+    // Clear a field's error as soon as it is corrected.
+    form.addEventListener('input', (e) => {
+      const t = e.target as HTMLElement;
+      const name = t.getAttribute('name');
+      if (name) setError(name);
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (errorBox) {
+        errorBox.hidden = true;
+        errorBox.textContent = '';
+      }
+      const errors = validate();
+      if (Object.keys(errors).length) {
+        showErrors(errors);
+        return;
+      }
+      showErrors({});
+
+      const turnstile = form.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]');
+      if (!turnstile?.value) {
+        if (errorBox) {
+          errorBox.textContent = 'Please wait a moment for the anti-spam check to finish, then try again.';
+          errorBox.hidden = false;
+        }
+        return;
+      }
+
+      submitBtn?.setAttribute('disabled', 'true');
+      if (submitBtn) submitBtn.textContent = 'Sending…';
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { accept: 'application/json' },
+        });
+        let data: any = null;
+        try {
+          data = await res.json();
+        } catch {}
+
+        if (res.ok && data?.ok) {
+          form.hidden = true;
+          if (success) {
+            success.hidden = false;
+            success.focus();
+            success.scrollIntoView({ block: 'center' });
+          }
+          return;
+        }
+        if (res.status === 422 && data?.errors) {
+          showErrors(data.errors);
+          return;
+        }
+        throw new Error(data?.message || `Request failed (${res.status})`);
+      } catch (err) {
+        const fallback =
+          'We could not send your enquiry just now. Please try again in a minute, or phone or email us and we will pick it up.';
+        if (errorBox) {
+          errorBox.textContent = err instanceof Error && err.message && !/failed to fetch/i.test(err.message) ? err.message : fallback;
+          errorBox.hidden = false;
+          errorBox.scrollIntoView({ block: 'center' });
+        }
+        // Reset Turnstile so a retry gets a fresh token.
+        (window as any).turnstile?.reset?.();
+      } finally {
+        submitBtn?.removeAttribute('disabled');
+        if (submitBtn) submitBtn.textContent = 'Send enquiry';
+      }
+    });
+  }
+</script>

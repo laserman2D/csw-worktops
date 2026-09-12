@@ -1,0 +1,111 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+---
+
+<Layout
+  title="Terms"
+  description="Terms for supply and fit of made-to-measure worktops by Cheshire Stoneworks. Draft for review."
+  noindex
+>
+  <section class="section">
+    <div class="container prose">
+      <span class="eyebrow">Legal</span>
+      <h1>Terms of business</h1>
+      <p class="notice notice--review">
+        REVIEW: this is a draft skeleton, not legal advice. It sets out the headings a supply-and-fit
+        contract for made-to-measure worktops normally needs, with notes on where the Consumer
+        Contracts Regulations 2013 and the Consumer Rights Act 2015 bite. Have it reviewed before
+        it is used, and make sure the written quote you send before taking a deposit carries the
+        pre-contract information listed at the bottom.
+      </p>
+
+      <h2>1. Who you are dealing with</h2>
+      <p>
+        {site.legal.registeredName}, company number {site.legal.companyNumber}, registered office
+        {site.legal.registeredOffice}. Contact {site.contact.email} or {site.contact.phoneDisplay}.
+      </p>
+
+      <h2>2. Quotes and the contract</h2>
+      <p>
+        Indicative prices given from a plan are estimates. A written quote follows the template
+        visit and states the material, colour, thickness, edge profile, cut-outs, upstands or
+        splashbacks, and the total price including VAT and fitting. The contract is formed when you
+        accept the written quote and pay the deposit. [TODO: confirm process.]
+      </p>
+
+      <h2>3. Deposit and payment</h2>
+      <p>
+        A deposit of [TODO: percentage] is payable on acceptance and before material is ordered. The
+        balance is due [TODO: on completion of the install / within N days]. [TODO: payment methods.]
+      </p>
+
+      <h2>4. Made to measure: cancellation</h2>
+      <p>
+        Worktops are cut to a template of your kitchen and cannot be resold. Under the Consumer
+        Contracts Regulations 2013, the 14-day right to cancel does not apply to goods made to the
+        consumer's specification or clearly personalised. [TODO: state clearly what is refundable if a
+        customer cancels before the template, after the template but before cutting, and after
+        cutting. Be specific and fair; an adviser should check that the deposit is not a penalty.]
+      </p>
+
+      <h2>5. Your kitchen must be ready</h2>
+      <p>
+        You are responsible for the kitchen being ready for template and for install as described on
+        the <a href="/how-it-works">how it works page</a>. A wasted visit because the kitchen is not
+        ready may be charged at [TODO: amount].
+      </p>
+
+      <h2>6. Natural materials</h2>
+      <p>
+        Granite and other natural stones vary in colour, veining and texture, and may contain fissures
+        and pits. Samples and showroom slabs are indicative. Engineered quartz and ultra-compact
+        surfaces may show slight variation between batches. Joins are filled with colour-matched
+        resin and will be visible on close inspection.
+      </p>
+
+      <h2>7. Fitting</h2>
+      <p>
+        We fix, join and seal the worktops and fit upstands. We do not plumb in sinks or connect
+        hobs. We are not responsible for units that are not level or fixed, or for walls that are out
+        of square, beyond what a template can accommodate.
+      </p>
+
+      <h2>8. Guarantee and your statutory rights</h2>
+      <p>
+        {site.guarantee.summary}. {site.guarantee.remedy}. This is in addition to your rights under the
+        Consumer Rights Act 2015, which require goods to be of satisfactory quality, fit for purpose
+        and as described, and services to be carried out with reasonable care and skill.
+      </p>
+
+      <h2>9. Complaints</h2>
+      <p>
+        Contact us first at {site.contact.email}. [TODO: state your complaints process and any
+        alternative dispute resolution scheme you belong to, or state that you do not.]
+      </p>
+
+      <h2>10. Pre-contract information checklist</h2>
+      <p class="notice notice--review">
+        REVIEW: for an off-premises or distance contract with a consumer, the Consumer Contracts
+        Regulations 2013 (Schedule 2) require the following to be given in a durable medium before the
+        consumer is bound, which in practice means on or with the written quote, before the deposit:
+      </p>
+      <ul>
+        <li>The main characteristics of the goods and services (the specification).</li>
+        <li>Our identity, geographic address, phone and email.</li>
+        <li>The total price including VAT, or how it will be calculated, plus any delivery or other charges.</li>
+        <li>Arrangements for payment, delivery and performance, and the time by which we will perform.</li>
+        <li>Our complaint handling policy.</li>
+        <li>A statement that the right to cancel does not apply because the goods are made to the consumer's specification.</li>
+        <li>The existence of the legal guarantee of conformity, and details of our own guarantee.</li>
+        <li>Duration of the contract, and any deposit or financial guarantees we require.</li>
+      </ul>
+      <p class="muted">
+        Failure to give this information can extend the customer's cancellation rights and affect our
+        ability to charge for work done. Check the quote template with an adviser.
+      </p>
+
+      <p class="muted">Last updated: [TODO: date].</p>
+    </div>
+  </section>
+</Layout>

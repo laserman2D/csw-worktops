@@ -1,0 +1,126 @@
+---
+import Layout from '../layouts/Layout.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import Faq from '../components/Faq.astro';
+import { typicalKitchen, priceDrivers } from '../data/pricing';
+import { pricingFaqs } from '../data/faqs';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: pricingFaqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout
+  title="Worktop pricing guide: what actually drives the cost"
+  description="An honest guide to what quartz, granite and Dekton worktops cost to supply and fit: the seven things that move the price, and a realistic range for a typical kitchen. No bait prices."
+  schema={[faqSchema]}
+>
+  <section class="section">
+    <div class="container prose">
+      <span class="eyebrow">Pricing guide</span>
+      <h1>What worktops cost, and why.</h1>
+      <p class="lead">
+        We do not publish a price per metre because it would be wrong for your kitchen. Here is what
+        moves the number, and a realistic range for a typical job, so you can tell whether we are
+        in your budget before you spend time on an enquiry.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--teal">
+    <div class="container">
+      <div class="prose">
+        <h2>A typical kitchen</h2>
+        <p>
+          By typical we mean {typicalKitchen.description}. Supplied, templated and fitted, that kind of
+          job usually comes in at:
+        </p>
+        <p class="range">{typicalKitchen.range}</p>
+        <p class="muted">
+          Smaller kitchens, plain colours and inset sinks sit at the bottom of the range. Islands,
+          undermount sinks, mitred ends and veined patterns push it up. Ultra-compact sits above it.
+          Granite depends on the slab.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section__intro">
+        <h2>What drives the price</h2>
+        <p class="lead">Roughly in order of how much difference each one makes.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <caption class="sr-only">Factors that affect worktop pricing</caption>
+          <thead>
+            <tr>
+              <th scope="col">Factor</th>
+              <th scope="col">Effect</th>
+              <th scope="col">What it means</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              priceDrivers.map((d) => (
+                <tr>
+                  <th scope="row">{d.name}</th>
+                  <td style="white-space: nowrap">{d.effect}</td>
+                  <td>{d.detail}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container prose">
+      <h2>How to get an accurate quote quickly</h2>
+      <ol>
+        <li>Send us the kitchen plan from your designer, or a sketch with the run lengths and depth. A photo of a drawing on the table is fine.</li>
+        <li>Tell us the sink type (inset or undermount), the hob type (inset or flush), and whether you want upstands or full splashbacks.</li>
+        <li>Pick a material, or two you are deciding between. If you have a colour in mind, name it.</li>
+        <li>Mention access: stairs, narrow hallways, a first-floor flat.</li>
+      </ol>
+      <p>
+        With that we can quote within a few percent. The template visit confirms the final figure
+        before anything is ordered.
+      </p>
+      <p>
+        All prices we quote include VAT, delivery and fitting. There are no extras for joins, sealing,
+        or upstand fixing.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <Faq items={pricingFaqs} />
+    </div>
+  </section>
+
+  <section class="section section--teal">
+    <div class="container">
+      <EnquiryForm heading="Get a real number" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .range {
+    font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2rem);
+    font-weight: 700;
+    color: var(--teal-dark);
+    margin: 1rem 0;
+  }
+</style>

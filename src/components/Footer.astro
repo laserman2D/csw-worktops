@@ -1,0 +1,113 @@
+---
+import { site, isPlaceholder } from '../data/site';
+
+const year = new Date().getFullYear();
+const hasPhone = !isPlaceholder(site.contact.phoneE164);
+const hasEmail = !isPlaceholder(site.contact.email);
+const reviewLinks = Object.values(site.reviews).filter((r) => r.url);
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div>
+        <p class="site-footer__brand">{site.name}</p>
+        <p class="muted">
+          Solid worktops, templated and fitted by the team that does it every day for the national
+          kitchen retailers. Based in Lymm, covering the North West and North Wales.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="site-footer__h">Contact</h2>
+        <ul class="site-footer__list">
+          <li>
+            {hasPhone ? <a href={`tel:${site.contact.phoneE164}`}>{site.contact.phoneDisplay}</a> : site.contact.phoneDisplay}
+          </li>
+          <li>
+            {hasEmail ? <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a> : site.contact.email}
+          </li>
+          <li>{site.contact.hoursText}</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="site-footer__h">Pages</h2>
+        <ul class="site-footer__list">
+          <li><a href="/materials">Materials</a></li>
+          <li><a href="/how-it-works">How it works</a></li>
+          <li><a href="/gallery">Gallery</a></li>
+          <li><a href="/pricing">Pricing guide</a></li>
+          <li><a href="/areas">Areas we cover</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="site-footer__h">Legal</h2>
+        <ul class="site-footer__list">
+          <li><a href="/privacy">Privacy policy</a></li>
+          <li><a href="/terms">Terms</a></li>
+          {reviewLinks.map((r) => (
+            <li>
+              <a href={r.url} rel="noopener">{r.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__legal">
+      <p>
+        {site.legal.registeredName} is a company registered in {site.legal.placeOfRegistration}, company
+        number {site.legal.companyNumber}. Registered office: {site.legal.registeredOffice}.
+        {site.legal.vatRegistered && <> VAT number {site.legal.vatNumber}.</>}
+      </p>
+      <p>&copy; {year} {site.legal.registeredName}. This site sets no non-essential cookies.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--teal-light);
+    border-top: 1px solid var(--border);
+    padding-block: 3rem 2rem;
+    font-size: 0.95rem;
+  }
+  .site-footer__grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    margin-bottom: 2.5rem;
+  }
+  .site-footer__brand {
+    font-weight: 700;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+  }
+  .site-footer__h {
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal-dark);
+    margin-bottom: 0.75rem;
+  }
+  .site-footer__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .site-footer__list a {
+    color: var(--text);
+  }
+  .site-footer__legal {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+</style>

@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Placeholder from '../components/Placeholder.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import { site } from '../data/site';
+---
+
+<Layout
+  title="About Cheshire Stoneworks: worktop templaters and fitters, Lymm"
+  description="Cheshire Stoneworks is a worktop template-and-install company in Lymm, Cheshire. Two install teams, four templaters, and years of fitting for the national kitchen retailers. Now working direct for homeowners."
+>
+  <section class="section">
+    <div class="container about">
+      <div class="prose">
+        <span class="eyebrow">About</span>
+        <h1>We fit worktops. That is the whole business.</h1>
+        <p class="lead">
+          Cheshire Stoneworks is a template-and-install company based in Lymm. For most of our history
+          the customer has been a kitchen retailer or a stone fabricator, not a homeowner. We are the
+          team they send to your house.
+        </p>
+        <p>
+          That work is done to a standard set by other people, checked by other people, and measured by
+          how often we have to go back. It has made us good at the two things that decide whether a
+          worktop install goes well: the template, and the fit.
+        </p>
+        <p>
+          This site is us doing the same job direct. Same templaters, same fitters, same suppliers.
+          You deal with us from the first phone call to the last wipe-down.
+        </p>
+
+        <h2>Who you will meet</h2>
+        <ul>
+          <li>Two install teams, two fitters each.</li>
+          <li>Four templaters.</li>
+          <li>One operations manager, who books the visits and answers the phone.</li>
+        </ul>
+        <p class="muted">[TODO: names and short bios if you want them on the page. Photos of the team and vans go alongside.]</p>
+
+        <h2>Credentials</h2>
+        <p class="muted">
+          [TODO: credentials. List only what is real and current: public liability insurance and its
+          cover level, any manufacturer-approved installer status (for example Caesarstone, Silestone
+          or Cosentino approved fabricator or installer), trade body memberships, DBS checks if you hold
+          them. Do not list anything we cannot show a certificate for.]
+        </p>
+
+        <h2>Our guarantee</h2>
+        <p>{site.guarantee.summary}. {site.guarantee.remedy}.</p>
+      </div>
+
+      <div class="about__photos">
+        <Placeholder caption="The team, on site" ratio="4 / 3" />
+        <Placeholder caption="One of our vans" ratio="4 / 3" />
+        <Placeholder caption="Templating equipment in use" ratio="4 / 3" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--teal">
+    <div class="container">
+      <EnquiryForm />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .about {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  .about__photos {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 56rem) {
+    .about {
+      grid-template-columns: 3fr 2fr;
+    }
+    .about__photos {
+      position: sticky;
+      top: 5.5rem;
+    }
+  }
+</style>

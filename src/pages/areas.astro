@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import { site } from '../data/site';
+import { areaGroups } from '../data/areas';
+---
+
+<Layout
+  title="Areas we cover: Cheshire, Manchester, Merseyside and North Wales"
+  description={`Worktop templating and fitting within about ${site.coverageRadiusMiles} miles of Lymm, Cheshire. Towns across Cheshire, Greater Manchester, Merseyside, Lancashire and North Wales.`}
+>
+  <section class="section">
+    <div class="container">
+      <div class="prose">
+        <span class="eyebrow">Areas we cover</span>
+        <h1>Within about {site.coverageRadiusMiles} miles of Lymm.</h1>
+        <p class="lead">
+          We are based in Lymm, between Warrington and Altrincham, with the M6, M56 and M62 on the
+          doorstep. That puts most of Cheshire, Greater Manchester and Merseyside within an hour, and
+          North Wales not much further.
+        </p>
+        <p>
+          The towns below are where we regularly work. If you are outside them, ask. A job further out
+          is usually fine if we can pair it with another visit the same day.
+        </p>
+      </div>
+
+      <div class="areas">
+        {
+          areaGroups.map((g) => (
+            <div class="areas__group">
+              <h2>{g.name}</h2>
+              <p>{g.towns.join(', ')}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--teal">
+    <div class="container">
+      <EnquiryForm heading="Check we cover you" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .areas {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  }
+  .areas__group h2 {
+    font-size: 1.125rem;
+    color: var(--teal-dark);
+  }
+</style>

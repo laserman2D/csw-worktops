@@ -1,0 +1,21 @@
+---
+/**
+ * Clearly labelled image placeholder. Used wherever a real photo is still
+ * to be supplied. Never passes anything off as our work.
+ */
+interface Props {
+  /** What the real photo will show, e.g. "Quartz island, Knutsford". */
+  caption: string;
+  /** CSS aspect ratio, e.g. "4 / 3". */
+  ratio?: string;
+  class?: string;
+}
+const { caption, ratio = '4 / 3', class: cls = '' } = Astro.props;
+---
+
+<div class:list={['ph', cls]} style={`aspect-ratio: ${ratio};`} role="img" aria-label={`Photo placeholder: ${caption}`}>
+  <div>
+    <span class="ph__label">Photo to follow</span>
+    <span class="ph__caption">{caption}</span>
+  </div>
+</div>

@@ -1,0 +1,151 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Placeholder from '../components/Placeholder.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import { gallery, materialLabels, type MaterialTag } from '../data/gallery';
+
+const items = gallery.filter((g) => g.permission);
+const tags = (Object.keys(materialLabels) as MaterialTag[]).filter((t) => items.some((i) => i.material === t));
+const showFilter = tags.length > 1 && items.length >= 4;
+---
+
+<Layout
+  title="Gallery of quartz, granite and Dekton worktops we have fitted"
+  description="Completed worktop installs across Cheshire, Manchester and North Wales. Every photo is our own work, shown with the customer's permission."
+>
+  <section class="section">
+    <div class="container">
+      <div class="prose">
+        <span class="eyebrow">Gallery</span>
+        <h1>Kitchens we have templated and fitted.</h1>
+        <p class="lead">
+          All our own work, photographed on install day or after, with the customer's permission. No
+          stock imagery, no showroom shots.
+        </p>
+      </div>
+
+      {
+        showFilter && (
+          <div class="filter" role="group" aria-label="Filter by material">
+            <button type="button" class="filter__btn is-active" data-filter="all" aria-pressed="true">
+              All
+            </button>
+            {tags.map((t) => (
+              <button type="button" class="filter__btn" data-filter={t} aria-pressed="false">
+                {materialLabels[t]}
+              </button>
+            ))}
+          </div>
+        )
+      }
+
+      <ul class="gallery" data-gallery>
+        {
+          items.map((g) => (
+            <li class="gallery__item fade" data-material={g.material}>
+              {g.image ? (
+                <Image
+                  src={g.image}
+                  alt={g.alt}
+                  widths={[400, 800, 1200]}
+                  sizes="(min-width: 60rem) 33vw, (min-width: 40rem) 50vw, 100vw"
+                  loading="lazy"
+                  decoding="async"
+                  class="gallery__img"
+                />
+              ) : (
+                <Placeholder caption={g.title} ratio="4 / 3" />
+              )}
+              <h2 class="gallery__title">{g.title}</h2>
+              <p class="muted gallery__meta">
+                {materialLabels[g.material]} · {g.location}
+              </p>
+              <p class="gallery__detail">{g.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="muted" data-gallery-empty hidden>Nothing to show for that material yet.</p>
+    </div>
+  </section>
+
+  <section class="section section--teal">
+    <div class="container">
+      <EnquiryForm heading="Want yours to look like this?" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 2rem 0;
+  }
+  .filter__btn {
+    font: inherit;
+    font-weight: 700;
+    background: #fff;
+    color: var(--teal-dark);
+    border: 2px solid var(--teal);
+    border-radius: var(--radius);
+    padding: 0.5rem 1rem;
+    min-height: 2.75rem;
+    cursor: pointer;
+  }
+  .filter__btn.is-active,
+  .filter__btn:hover {
+    background: var(--teal);
+    color: #fff;
+  }
+  .gallery {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0 0;
+    display: grid;
+    gap: 2rem 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  }
+  .gallery__img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+  .gallery__title {
+    font-size: 1.125rem;
+    margin: 0.9rem 0 0.2rem;
+  }
+  .gallery__meta {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+  .gallery__detail {
+    font-size: 0.95rem;
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter__btn');
+  const items = document.querySelectorAll<HTMLElement>('[data-gallery] > li');
+  const empty = document.querySelector<HTMLElement>('[data-gallery-empty]');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const f = btn.dataset.filter;
+      buttons.forEach((b) => {
+        const active = b === btn;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-pressed', String(active));
+      });
+      let shown = 0;
+      items.forEach((li) => {
+        const show = f === 'all' || li.dataset.material === f;
+        li.hidden = !show;
+        if (show) shown++;
+      });
+      if (empty) empty.hidden = shown > 0;
+    });
+  });
+</script>

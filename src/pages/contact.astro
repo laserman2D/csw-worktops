@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import { site, isPlaceholder } from '../data/site';
+
+const hasPhone = !isPlaceholder(site.contact.phoneE164);
+const hasEmail = !isPlaceholder(site.contact.email);
+---
+
+<Layout
+  title="Contact Cheshire Stoneworks for a worktop quote"
+  description="Get a quote for quartz, granite or Dekton worktops. Send us your kitchen plan, or phone. Based in Lymm, Cheshire, covering the North West and North Wales."
+>
+  <section class="section">
+    <div class="container">
+      <div class="prose">
+        <span class="eyebrow">Contact</span>
+        <h1>Send us the plan. We will send you a price.</h1>
+        <p class="lead">
+          The form is the quickest way, because it asks for everything we need. But phone or email
+          work too.
+        </p>
+      </div>
+
+      <dl class="dl contact-details">
+        <dt>Phone</dt>
+        <dd>{hasPhone ? <a href={`tel:${site.contact.phoneE164}`}>{site.contact.phoneDisplay}</a> : site.contact.phoneDisplay}</dd>
+        {site.contact.whatsapp && (
+          <>
+            <dt>WhatsApp</dt>
+            <dd><a href={`https://wa.me/${site.contact.whatsapp}`} rel="noopener">Message us on WhatsApp</a></dd>
+          </>
+        )}
+        <dt>Email</dt>
+        <dd>{hasEmail ? <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a> : site.contact.email}</dd>
+        <dt>Hours</dt>
+        <dd>{site.contact.hoursText}</dd>
+        <dt>Based in</dt>
+        <dd>{site.address.street}, {site.address.locality}, {site.address.region} {site.address.postcode}</dd>
+        <dt>Service area</dt>
+        <dd>About {site.coverageRadiusMiles} miles from Lymm. <a href="/areas">See the towns we cover</a>.</dd>
+      </dl>
+      <p class="muted" style="max-width: var(--measure)">
+        We work from a yard, not a showroom. Material samples can be brought to the template visit, or
+        we can point you to the nearest showroom for the brand you are interested in.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--teal">
+    <div class="container">
+      <EnquiryForm heading="Enquiry form" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .contact-details {
+    margin-top: 2rem;
+    font-size: 1.0625rem;
+  }
+</style>

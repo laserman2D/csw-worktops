@@ -1,0 +1,183 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Placeholder from '../components/Placeholder.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import Faq from '../components/Faq.astro';
+import { site } from '../data/site';
+import { processFaqs } from '../data/faqs';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: processFaqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout
+  title="How a worktop install works, from survey to fitting"
+  description="What happens between your enquiry and your finished worktops: the template visit, fabrication, and install day. Realistic timescales and exactly what your kitchen needs to be ready."
+  schema={[faqSchema]}
+>
+  <section class="section">
+    <div class="container prose">
+      <span class="eyebrow">How it works</span>
+      <h1>From enquiry to finished worktops.</h1>
+      <p class="lead">
+        Three visits at most: template, install, and a second template visit only if you are having
+        full-height splashbacks. Here is what happens and what we need from you at each stage.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="stage">
+        <div class="stage__text prose">
+          <span class="eyebrow">Step 1</span>
+          <h2>Quote</h2>
+          <p>
+            Send us the kitchen plan, or a sketch with rough dimensions, through the
+            <a href="/contact#enquire">enquiry form</a>. Tell us the material you are thinking about, or
+            say you are not sure. We reply with an indicative price and the next available survey date,
+            {site.leadTimes.enquiryToSurvey}.
+          </p>
+          <p>
+            If you want to go ahead, we send a written quote and specification: material, colour,
+            thickness, edge profile, cut-outs, upstands, and the price including VAT and fitting. You
+            approve that in writing before anything is ordered.
+          </p>
+          <p class="notice notice--review">
+            REVIEW: Consumer Contracts Regulations 2013. Because this is a made-to-measure contract
+            agreed off-premises or at a distance, the pre-contract information (the specification, total
+            price, delivery and install timescales, our complaints process, and the fact that the
+            14-day cancellation right does not apply to goods made to the consumer's specification)
+            must be given in a durable form before the customer is bound. That means before the deposit
+            is taken. Check this wording and the quote template with an adviser.
+          </p>
+        </div>
+        <Placeholder caption="A kitchen plan marked up for quoting" ratio="4 / 3" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="stage">
+        <div class="stage__text prose">
+          <span class="eyebrow">Step 2</span>
+          <h2>Template</h2>
+          <p>
+            One of our templaters visits and takes a digital template of the fitted units. This takes
+            about an hour for a normal kitchen. We agree the position of joins and the exact cut-outs
+            with you on the day, and confirm the specification.
+          </p>
+          <h3>Your kitchen needs to be ready. That means:</h3>
+          <ul>
+            <li>All base units fitted, fixed to the wall, and level.</li>
+            <li>End panels, wall panels and appliance housings in place.</li>
+            <li>The sink, hob and taps on site, in their boxes is fine. We template around the real thing, not a spec sheet.</li>
+            <li>Any undermount sink fitted to its unit if the fitter is doing that.</li>
+            <li>Old worktops removed, unless we have agreed to remove them.</li>
+            <li>Range cookers and freestanding appliances in position.</li>
+          </ul>
+          <p>
+            If the kitchen is not ready when we arrive, we cannot template. We will need to rebook, and
+            a wasted visit may be charged. We will phone the day before to check.
+          </p>
+          <p>
+            If anything moves after the template, tell us before fabrication. Worktops are cut to the
+            template. They will not fit units that have been moved.
+          </p>
+        </div>
+        <Placeholder caption="Templating a fitted kitchen" ratio="4 / 3" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="stage">
+        <div class="stage__text prose">
+          <span class="eyebrow">Step 3</span>
+          <h2>Fabrication</h2>
+          <p>
+            The stone is cut, edged and polished to the template. This normally takes
+            {site.leadTimes.templateToInstall}. Ultra-compact and some granites take longer, and we will
+            tell you if yours will.
+          </p>
+          <p>
+            We will confirm the install date once the pieces are ready. If you have a fitter or
+            plumber waiting to come back, book them for after the install, not the same day.
+          </p>
+        </div>
+        <Placeholder caption="Slab being cut on the saw" ratio="4 / 3" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="stage">
+        <div class="stage__text prose">
+          <span class="eyebrow">Step 4</span>
+          <h2>Install day</h2>
+          <p>
+            Two fitters arrive with the pieces. A typical kitchen takes half a day. A large kitchen
+            with an island, waterfall ends or full-height splashbacks can take a full day.
+          </p>
+          <h3>What we do</h3>
+          <ul>
+            <li>Dry-fit every piece and check it against the units.</li>
+            <li>Fix down, join, and fill joins with colour-matched resin.</li>
+            <li>Fit upstands and seal to the wall.</li>
+            <li>Seal granite. Clean everything down.</li>
+            <li>Walk you round it before we leave.</li>
+          </ul>
+          <h3>What we need</h3>
+          <ul>
+            <li>Someone to let us in and be contactable during the day.</li>
+            <li>Clear access from the van to the kitchen. Tell us about steps, narrow doors or upper floors when you enquire.</li>
+            <li>Water and power.</li>
+            <li>Units clear of anything you do not want dusty.</li>
+          </ul>
+          <p>
+            We do not plumb in sinks or connect hobs. Your plumber and electrician can do that the next
+            day, once the resin has cured.
+          </p>
+          <h3>After</h3>
+          <p>{site.guarantee.summary}. {site.guarantee.remedy}.</p>
+        </div>
+        <Placeholder caption="Fitters setting a worktop on install day" ratio="4 / 3" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <Faq items={processFaqs} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <EnquiryForm />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .stage {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (min-width: 56rem) {
+    .stage {
+      grid-template-columns: 3fr 2fr;
+    }
+  }
+</style>

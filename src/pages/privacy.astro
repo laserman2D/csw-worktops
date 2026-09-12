@@ -1,0 +1,95 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+---
+
+<Layout
+  title="Privacy policy"
+  description="How Cheshire Stoneworks handles the personal data you send through this website, including the enquiry form. UK GDPR privacy notice."
+  noindex
+>
+  <section class="section">
+    <div class="container prose">
+      <span class="eyebrow">Legal</span>
+      <h1>Privacy policy</h1>
+      <p class="notice notice--review">
+        REVIEW: this is a draft skeleton, not legal advice. Check it against the ICO's guidance on
+        privacy notices and have it reviewed before the site goes live. Items in square brackets need
+        your input.
+      </p>
+
+      <h2>Who we are</h2>
+      <p>
+        {site.legal.registeredName}, company number {site.legal.companyNumber}, registered office
+        {site.legal.registeredOffice}. We are the data controller for the personal data described
+        here. Contact: {site.contact.email}.
+      </p>
+      <p class="muted">[TODO: confirm whether you are registered with the ICO and add the registration number if so.]</p>
+
+      <h2>What we collect and why</h2>
+      <h3>When you send an enquiry</h3>
+      <p>
+        The enquiry form asks for your name, phone number, email address, postcode, details about your
+        kitchen, and optionally a message and a file such as a plan, sketch or photo. We use this to
+        reply to you, to check you are within our service area, to give you a price, and, if you go
+        ahead, to book and carry out the work.
+      </p>
+      <p>
+        Our lawful basis is that this processing is necessary for steps you have asked us to take
+        before entering into a contract, and then for performing that contract (UK GDPR Article
+        6(1)(b)). Where we keep records after a job for warranty or accounting reasons, the basis is
+        our legal obligations and legitimate interests.
+      </p>
+      <h3>When you phone, email or message us</h3>
+      <p>We keep the details you give us for the same purposes as above.</p>
+      <h3>Technical data</h3>
+      <p>
+        Our hosting provider, Cloudflare, processes your IP address and request details in order to
+        serve the site and to protect it from abuse. The enquiry form uses Cloudflare Turnstile to
+        block automated spam; Turnstile processes limited browser and network information for that
+        purpose. See Cloudflare's own privacy policy for details.
+      </p>
+      {site.cloudflareAnalyticsToken ? (
+        <p>
+          We use Cloudflare Web Analytics, which is cookieless and does not track you across sites or
+          build a profile of you.
+        </p>
+      ) : (
+        <p>We do not run analytics on this site.</p>
+      )}
+
+      <h2>Who we share it with</h2>
+      <p>
+        Enquiries are forwarded from the website to our own job management systems. [TODO: name them,
+        e.g. n8n (self-hosted by us) and ServiceM8 (job management software; state where it is hosted
+        and its role as a processor).] If you go ahead with a job, we share the specification and your
+        delivery address with the fabricator who cuts the stone, and with our own fitters. We do not
+        sell or otherwise share your data for marketing.
+      </p>
+      <p class="muted">[TODO: list every processor and whether any data leaves the UK, for example if ServiceM8 hosts data in Australia. State the safeguard, such as the UK IDTA or Addendum.]</p>
+
+      <h2>How long we keep it</h2>
+      <p>
+        Enquiries that do not become a job: [TODO: period, e.g. 12 months] from the last contact, then
+        deleted. Jobs we carry out: for the length of the guarantee plus [TODO: period], and financial
+        records for six years after the end of the tax year as HMRC requires.
+      </p>
+
+      <h2>Cookies</h2>
+      <p>
+        This site sets no non-essential cookies, so there is no cookie banner. Cloudflare may set a
+        strictly necessary cookie as part of its bot protection, which is exempt from consent under
+        PECR. If we add anything that needs consent in future, this page and the site will change.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        You can ask us for a copy of your data, ask us to correct or delete it, object to or restrict
+        how we use it, and ask for it in a portable format. Email {site.contact.email}. You can also
+        complain to the Information Commissioner's Office at ico.org.uk.
+      </p>
+
+      <p class="muted">Last updated: [TODO: date].</p>
+    </div>
+  </section>
+</Layout>

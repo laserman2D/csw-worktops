@@ -1,0 +1,203 @@
+---
+import { site, isPlaceholder } from '../data/site';
+
+const nav = [
+  { href: '/materials', label: 'Materials' },
+  { href: '/how-it-works', label: 'How it works' },
+  { href: '/gallery', label: 'Gallery' },
+  { href: '/pricing', label: 'Pricing guide' },
+  { href: '/areas', label: 'Areas' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const hasPhone = !isPlaceholder(site.contact.phoneE164);
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">{site.name}<span class="brand__sub">Worktops</span></span>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="nav-toggle__bars" aria-hidden="true"></span>
+      <span>Menu</span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Main">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li class="site-nav__cta">
+          {
+            hasPhone ? (
+              <a class="btn btn--ghost" href={`tel:${site.contact.phoneE164}`}>
+                {site.contact.phoneDisplay}
+              </a>
+            ) : (
+              <a class="btn btn--ghost" href="/contact#enquire">
+                Get a quote
+              </a>
+            )
+          }
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.25rem;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 1.125rem;
+    letter-spacing: -0.01em;
+  }
+  .brand__mark {
+    width: 1.6rem;
+    height: 1.6rem;
+    background: var(--teal);
+    border-radius: 3px;
+    flex: none;
+  }
+  .brand__sub {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-top: 0.15rem;
+  }
+  .nav-toggle {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    font: inherit;
+    font-weight: 700;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.8rem;
+    min-height: 2.75rem;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .nav-toggle__bars {
+    width: 1.1rem;
+    height: 2px;
+    background: currentColor;
+    box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor;
+  }
+  .site-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem 1.25rem;
+    flex-wrap: wrap;
+  }
+  .site-nav a:not(.btn) {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.5rem 0;
+    display: inline-block;
+    border-bottom: 2px solid transparent;
+  }
+  .site-nav a:not(.btn):hover,
+  .site-nav a[aria-current='page'] {
+    border-bottom-color: var(--teal);
+    color: var(--teal-dark);
+  }
+  .site-nav__cta .btn {
+    min-height: 2.6rem;
+    padding: 0.4rem 1rem;
+  }
+  @media (max-width: 64rem) {
+    .nav-toggle {
+      display: inline-flex;
+    }
+    .site-nav {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .site-nav.is-open {
+      display: block;
+    }
+    .site-nav ul {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0.5rem var(--gutter) 1rem;
+      gap: 0;
+    }
+    .site-nav a:not(.btn) {
+      display: block;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .site-nav a[aria-current='page'] {
+      border-bottom-color: var(--border);
+    }
+    .site-nav__cta {
+      padding-top: 1rem;
+    }
+    .site-nav__cta .btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.nav-toggle');
+  const nav = document.getElementById('site-nav');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+        nav.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.focus();
+      }
+    });
+  }
+</script>
